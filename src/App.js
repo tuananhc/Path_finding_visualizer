@@ -56,6 +56,26 @@ function App() {
         onMouseDown={() => {
           if ((node.row === startingNode[0] && node.col === startingNode[1])) {
             setIsMovingStart(true)
+            anime({
+              targets: [
+                document.getElementById('node'.concat((node.row - 1) * Math.floor(window.innerWidth / 20) + node.col)),
+                document.getElementById('node'.concat((node.row + 1) * Math.floor(window.innerWidth / 20) + node.col)),
+                document.getElementById('node'.concat(node.row * Math.floor(window.innerWidth / 20) + node.col + 1)),
+                document.getElementById('node'.concat(node.row * Math.floor(window.innerWidth / 20) + node.col - 1)) 
+              ],
+              scale: [
+                { value: 1.1, easing: 'easeOutSine', duration: 500 },
+                { value: 1, easing: 'easeInOutQuad', duration: 1200 }
+              ],
+              background: [
+                { value: '#0CECDD', easing: 'linear', duration: 500 },
+                { value: '#88FFF7', easing: 'linear', duration: 500 },
+              ],
+              borderRadius: [
+                { value: '20%', easing: 'linear', duration: 1000 },
+                { value: '0%', easing: 'linear', duration: 500 },
+              ],
+            })
             return
           }
           if ((node.row === endingNode[0] && node.col === endingNode[1])) {
