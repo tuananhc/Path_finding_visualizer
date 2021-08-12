@@ -23,7 +23,3 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.node:hover {
-  background-color: #282c34;
-}
