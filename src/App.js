@@ -1,7 +1,8 @@
 import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState, useEffect } from 'react';
-import { Button } from '@material-ui/core'
+import { Button } from '@material-ui/core';
+import { dijkstra } from './functions';
 
 function App() {
 
