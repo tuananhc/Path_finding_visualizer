@@ -2,7 +2,7 @@ import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState, useEffect } from 'react';
 import { Button } from '@material-ui/core';
-import { dijkstra } from './functions';
+import { dijkstra, animateDijkstra } from './pathFindingFunctions';
 
 function App() {
 
@@ -34,7 +34,7 @@ function App() {
 
   function renderGrid(grid) {
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {grid.map((row) => {
           return (
             <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -57,26 +57,6 @@ function App() {
         onMouseDown={() => {
           if ((node.row === startingNode[0] && node.col === startingNode[1])) {
             setIsMovingStart(true)
-            anime({
-              targets: [
-                document.getElementById('node'.concat((node.row - 1) * Math.floor(window.innerWidth / 20) + node.col)),
-                document.getElementById('node'.concat((node.row + 1) * Math.floor(window.innerWidth / 20) + node.col)),
-                document.getElementById('node'.concat(node.row * Math.floor(window.innerWidth / 20) + node.col + 1)),
-                document.getElementById('node'.concat(node.row * Math.floor(window.innerWidth / 20) + node.col - 1)) 
-              ],
-              scale: [
-                { value: 1.1, easing: 'easeOutSine', duration: 500 },
-                { value: 1, easing: 'easeInOutQuad', duration: 1200 }
-              ],
-              background: [
-                { value: '#0CECDD', easing: 'linear', duration: 500 },
-                { value: '#88FFF7', easing: 'linear', duration: 500 },
-              ],
-              borderRadius: [
-                { value: '20%', easing: 'linear', duration: 1000 },
-                { value: '0%', easing: 'linear', duration: 500 },
-              ],
-            })
             return
           }
           if ((node.row === endingNode[0] && node.col === endingNode[1])) {
@@ -133,6 +113,7 @@ function App() {
           if (isMousePressed) {
             setIsMousePressed(false)
           }
+
         }}
       >
         {(node.isWall) ? (
@@ -160,25 +141,6 @@ function App() {
     )
   }
 
-  function start() {
-    anime({
-      targets: '.node',
-      scale: [
-        { value: 1.1, easing: 'easeOutSine', duration: 500 },
-        { value: 1, easing: 'easeInOutQuad', duration: 1200 }
-      ],
-      background: [
-        { value: '#0CECDD', easing: 'linear', duration: 500 },
-        { value: '#88FFF7', easing: 'linear', duration: 500 },
-      ],
-      borderRadius: [
-        { value: '20%', easing: 'linear', duration: 1000 },
-        { value: '0%', easing: 'linear', duration: 500 },
-      ],
-      delay: anime.stagger(200, { grid: [Math.floor(window.innerWidth / 20), Math.floor((window.innerHeight - 200) / 20)] }),
-    });
-  }
-
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
       <div style={{ height: 200, width: '100%', backgroundColor: 'teal' }}>
@@ -187,7 +149,7 @@ function App() {
           color="primary"
           style={{ width: 100 }}
           onClick={() => {
-            start()
+            animateDijkstra(dijkstra(grid[startingNode[0]][startingNode[1]], endingNode, grid))
           }}
         >
           Start
@@ -200,12 +162,17 @@ function App() {
             setGrid(blankGrid)
             setStartingNode([Math.floor((window.innerHeight - 200) / 40), Math.floor(window.innerWidth / 80)])
             setEndingNode([Math.floor((window.innerHeight - 200) / 40), Math.floor(window.innerWidth * 3 / 80)])
+            anime({
+              targets: '.node',
+              background: '#FFFFFF'
+            })
           }}
+
         >
           Reset
         </Button>
       </div>
-      <div>
+      <div >
         {renderGrid(grid)}
       </div>
     </div>
