@@ -1,8 +1,9 @@
 import './App.css';
 import anime from 'animejs/lib/anime.es.js';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
 import { dijkstra, animateDijkstra } from './pathFindingFunctions';
+import { simpleRandomizeDepthFirstSearch } from './createMazeFunctions'
 
 function App() {
 
@@ -167,11 +168,21 @@ function App() {
               background: '#FFFFFF'
             })
           }}
-
         >
           Reset
         </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ width: 100 }}
+          onClick={() => {
+            simpleRandomizeDepthFirstSearch(grid, setGrid)
+          }}
+        >
+          Maze
+        </Button>
       </div>
+
       <div >
         {renderGrid(grid)}
       </div>
