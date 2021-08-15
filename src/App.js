@@ -5,6 +5,8 @@ import { Button } from '@material-ui/core';
 import { dijkstra, animateDijkstra } from './pathFindingFunctions';
 import { simpleRandomizeDepthFirstSearch } from './createMazeFunctions'
 
+//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
+
 function App() {
 
   const blankGrid = createGrid()
