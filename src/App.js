@@ -66,17 +66,6 @@ function App() {
           }
           var newGrid = [...grid]
           var curNode = newGrid[node.row][node.col]
-          if (curNode.isWall) {
-            anime({
-              targets: document.getElementById("node".concat(curNode.row * grid[0].length + curNode.col)),
-              background: '#FFFFFF'
-            })
-          } else {
-            anime({
-              targets: document.getElementById("node".concat(curNode.row * grid[0].length + curNode.col)),
-              background: '#000000'
-            })
-          }
           curNode.isWall = !node.isWall
           newGrid[node.row][node.col] = curNode
           setGrid(newGrid)
@@ -88,10 +77,6 @@ function App() {
             if (node.isWall) {
               var newGrid = [...grid]
               var curNode = newGrid[node.row][node.col]
-              anime({
-                targets: document.getElementById("node".concat(curNode.row * grid[0].length + curNode.col)),
-                background: '#000000'
-              })
               curNode.isWall = !node.isWall
               newGrid[node.row][node.col] = curNode
               setGrid(newGrid)
@@ -132,11 +117,11 @@ function App() {
 
         }}
       >
-        {/* {(node.isWall) ? (
+        {(node.isWall) ? (
           <div style={{ width: 18, height: 18, backgroundColor: 'black' }} />
         ) : (
           <></>
-        )} */}
+        )}
         {(node.row === startingNode[0] && node.col === startingNode[1]) ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{ width: 18, height: 18, borderRadius: 18, backgroundColor: 'black' }} />
