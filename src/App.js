@@ -3,7 +3,7 @@ import anime from 'animejs/lib/anime.es.js';
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
 import { dijkstra, animateDijkstra } from './pathFindingFunctions';
-import { simpleRandomizeDepthFirstSearch } from './createMazeFunctions'
+import { animateDfsMaze, randomizeDepthFirstSearch } from './mazeFunctions/createMazeFunctions'
 
 function App() {
 
@@ -176,7 +176,7 @@ function App() {
           color="primary"
           style={{ width: 100 }}
           onClick={() => {
-            simpleRandomizeDepthFirstSearch(grid, setGrid)
+            animateDfsMaze(randomizeDepthFirstSearch(grid, setGrid), grid, setGrid)
           }}
         >
           Maze

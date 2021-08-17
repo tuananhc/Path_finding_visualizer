@@ -1,7 +1,6 @@
 import anime from 'animejs/lib/anime.es'
-import React from 'react'
 
-export function getNeighbours(curNode, grid) {
+function getNeighbours(curNode, grid) {
 	var neighbour = []
 
 	if (curNode.row > 0) {
