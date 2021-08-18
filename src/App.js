@@ -2,8 +2,10 @@ import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState } from 'react';
 import { Button } from '@material-ui/core';
-import { dijkstra, animateDijkstra } from './pathFindingFunctions';
-import { animateDfsMaze, randomizeDepthFirstSearch, createPath, anotherAnimateDfs } from './mazeFunctions/randomizedDfsMaze'
+import { dijkstra, animateDijkstra } from './pathFindingFunctions/dijkstra';
+import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze'
+import xmark from './assets/close.png'
+import arrow from './assets/right-arrow.png'
 
 function App() {
 
@@ -52,9 +54,8 @@ function App() {
   function createNode(node) {
     return (
       <div
-        className='node'
-        id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)}
-        style={{ width: 18, height: 18, border: '1px solid #7DEDFF', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        
+        style={{ width: 20, height: 20 }}
         onMouseDown={() => {
           if ((node.row === startingNode[0] && node.col === startingNode[1])) {
             setIsMovingStart(true)
@@ -117,30 +118,43 @@ function App() {
 
         }}
       >
-        {(node.isWall) ? (
-          <div style={{ width: 18, height: 18, backgroundColor: 'black' }} />
-        ) : (
-          <></>
-        )}
+        
         {(node.row === startingNode[0] && node.col === startingNode[1]) ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ width: 18, height: 18, borderRadius: 18, backgroundColor: 'black' }} />
-            <div style={{ width: 12, height: 12, borderRadius: 12, backgroundColor: 'white', position: 'absolute' }} />
+          <div style={{position: 'relative' }}>
+            <img src={arrow} style={{width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF'}}/>
+            <div style={{width: 18, height: 18, position: 'absolute', opactiy: 0}}/>
           </div>
         ) : (
-          <></>
+          <>
+            {(node.row === endingNode[0] && node.col === endingNode[1]) ? (
+              <div style={{ width: 18, height: 18 }}>
+                <img src={xmark} style={{width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF'}}/>
+                <div style={{width: 18, height: 18, position: 'absolute', opactiy: 0}}/>
+              </div>
+            ) : (
+              <>
+                {(node.isWall) ? (
+                  <div style={{ width: 20, height: 20, backgroundColor: 'black' }} />
+                ) : (
+                  <div style={{position: 'relative'}}>
+                    <div style={{ width: 18, height: 18, border: '1px solid #7DEDFF', position: 'absolute'}}/>
+                    <div 
+                      className='node'
+                      id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)} 
+                      style={{ width: 20, height: 20, position: 'absolute' }}
+                    />
+                  </div>
+                  
+                )}
+              </>
+            )}
+          </>
         )}
-        {(node.row === endingNode[0] && node.col === endingNode[1]) ? (
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ width: 18, height: 18, borderRadius: 18, backgroundColor: 'red' }} />
-            <div style={{ width: 12, height: 12, borderRadius: 12, backgroundColor: 'green', position: 'absolute' }} />
-          </div>
-        ) : (
-          <></>
-        )}
+        
       </div>
     )
   }
+
 
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
@@ -176,7 +190,7 @@ function App() {
           color="primary"
           style={{ width: 100 }}
           onClick={() => {
-            anotherAnimateDfs(createPath(grid, setGrid), grid, setGrid)
+            animateDfsMaze(createDfsMaze(grid, setGrid), grid, setGrid)
           }}
         >
           Maze

@@ -135,5 +135,3 @@ function animatePath(node, time) {
 		})
 	}, 50 * time)
 }
-
-
