@@ -30,7 +30,7 @@ function getNeighbours(curNode, grid) {
 	return neighbour
 }
 
-export function dijkstra(startingNode, endingNode, grid) {
+export function bfsSearch(startingNode, endingNode, grid) {
 	var width = grid[0].length
 	var queue = [startingNode]
 	var visited = []
@@ -87,7 +87,7 @@ export function dijkstra(startingNode, endingNode, grid) {
 	return [result, path]
 }
 
-export function animateDijkstra([visitOrder, path]) {
+export function animateBfsSearch([visitOrder, path]) {
 	for (var i = 0; i <= visitOrder.length; i++) {
 		if (i === visitOrder.length) {
 			setTimeout(() => {
@@ -105,7 +105,7 @@ export function animateDijkstra([visitOrder, path]) {
 function animateSearch(node, time) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 20) + node.col)),
+			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 15) + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
@@ -125,7 +125,7 @@ function animateSearch(node, time) {
 function animatePath(node, time) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 20) + node.col)),
+			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 15) + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }

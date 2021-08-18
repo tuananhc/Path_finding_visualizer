@@ -1,7 +1,5 @@
 import anime from 'animejs/lib/anime.es'
 
-
-
 export function createDfsMaze(grid, setGrid) {
   var visited = []
   var newGrid = [...grid]
