@@ -17,6 +17,8 @@ function App() {
   const [isMovingStart, setIsMovingStart] = useState(false)
   const [isMovingEnd, setIsMovingEnd] = useState(false)
 
+
+
   function createGrid() {
     var grids = []
     for (var i = 0; i < Math.floor((window.innerHeight - 200) / 20); i++) {
@@ -27,7 +29,8 @@ function App() {
           col: j,
           isWall: false,
           isStart: false,
-          isEnd: false
+          isEnd: false,
+          distance: -1,
         })
       }
       grids.push(row)
@@ -54,7 +57,6 @@ function App() {
   function createNode(node) {
     return (
       <div
-        
         style={{ width: 20, height: 20 }}
         onMouseDown={() => {
           if ((node.row === startingNode[0] && node.col === startingNode[1])) {
@@ -118,43 +120,41 @@ function App() {
 
         }}
       >
-        
+
         {(node.row === startingNode[0] && node.col === startingNode[1]) ? (
-          <div style={{position: 'relative' }}>
-            <img src={arrow} style={{width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF'}}/>
-            <div style={{width: 18, height: 18, position: 'absolute', opactiy: 0}}/>
+          <div id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)} style={{ width: 18, height: 18 }}>
+            <img src={arrow} style={{ width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF' }} draggable={false} />
           </div>
         ) : (
           <>
             {(node.row === endingNode[0] && node.col === endingNode[1]) ? (
-              <div style={{ width: 18, height: 18 }}>
-                <img src={xmark} style={{width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF'}}/>
-                <div style={{width: 18, height: 18, position: 'absolute', opactiy: 0}}/>
+              <div id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)} style={{ width: 18, height: 18 }}>
+                <img src={xmark} style={{ width: 18, height: 18, position: 'absolute', border: '1px solid #7DEDFF' }} draggable={false} />
               </div>
             ) : (
               <>
                 {(node.isWall) ? (
-                  <div style={{ width: 20, height: 20, backgroundColor: 'black' }} />
+                  <div
+                    className='node'
+                    id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)} style={{ width: 20, height: 20, backgroundColor: 'black' }} />
                 ) : (
-                  <div style={{position: 'relative'}}>
-                    <div style={{ width: 18, height: 18, border: '1px solid #7DEDFF', position: 'absolute'}}/>
-                    <div 
+                  <div style={{ position: 'relative' }}>
+                    <div
                       className='node'
-                      id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)} 
+                      id={"node".concat(Math.floor(window.innerWidth / 20) * node.row + node.col)}
                       style={{ width: 20, height: 20, position: 'absolute' }}
                     />
                   </div>
-                  
+
                 )}
               </>
             )}
           </>
         )}
-        
+
       </div>
     )
   }
-
 
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>

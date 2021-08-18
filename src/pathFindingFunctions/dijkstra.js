@@ -35,18 +35,22 @@ export function dijkstra(startingNode, endingNode, grid) {
 	var queue = [startingNode]
 	var visited = []
 	var prev = []
-	var result = []
+	var result = [startingNode]
 	var found = false
 	var path = []
+	var dist = []
 	for (var i = 0; i < grid.length; i++) {
 		var visit = []
 		var pre = []
+		var dis = []
 		for (var j = 0; j < width; j++) {
 			visit.push(false)
 			pre.push(-1)
+			dis.push(-1)
 		}
 		visited.push(visit)
 		prev.push(pre)
+		dist.push(dis)
 	}
 	while (queue.length > 0 && !found) {
 		var node = queue[0]
@@ -59,12 +63,14 @@ export function dijkstra(startingNode, endingNode, grid) {
 				result.push(neighbour)
 				found = true
 				prev[neighbour.row][neighbour.col] = node
+				dist[neighbour.row][neighbour.col] = dist[node.row][node.col] + 1
 				break
 			}
 			if (!visited[neighbour.row][neighbour.col]) {
 				queue.push(neighbour)
 				visited[neighbour.row][neighbour.col] = true
 				prev[neighbour.row][neighbour.col] = node
+				dist[neighbour.row][neighbour.col] = dist[node.row][node.col] + 1
 				result.push(neighbour)
 			}
 		}
@@ -85,8 +91,8 @@ export function animateDijkstra([visitOrder, path]) {
 	for (var i = 0; i <= visitOrder.length; i++) {
 		if (i === visitOrder.length) {
 			setTimeout(() => {
-				for (var j = path.length - 1; j >= 0; j--) {
-					animatePath(path[j], path.length - j)
+				for (var j = 0; j < path.length; j++) {
+					animatePath(path[j], j)
 				}
 			}, 10 * i + 100)
 			return
@@ -106,7 +112,7 @@ function animateSearch(node, time) {
 			],
 			background: [
 				{ value: '#0CECDD', easing: 'linear', duration: 500 },
-				{ value: '#88FFF7', easing: 'linear', duration: 500 },
+				{ value: '#7DEDFF', easing: 'linear', duration: 500 },
 			],
 			borderRadius: [
 				{ value: '20%', easing: 'linear', duration: 1000 },
@@ -125,13 +131,13 @@ function animatePath(node, time) {
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
 			],
 			background: [
-				{ value: '#FFD371', easing: 'linear', duration: 500 },
-				{ value: '#FFF338', easing: 'linear', duration: 500 },
+				{ value: '#DF2E2E', easing: 'linear', duration: 500 },
+				{ value: '#FF7600', easing: 'linear', duration: 500 },
 			],
 			borderRadius: [
 				{ value: '20%', easing: 'linear', duration: 1000 },
 				{ value: '0%', easing: 'linear', duration: 500 },
 			],
 		})
-	}, 50 * time)
+	}, 15 * time)
 }
