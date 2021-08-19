@@ -45,7 +45,7 @@ export function createDfsMaze(grid, setGrid) {
   return order
 }
 
-export function animateDfsMaze(order, grid, setGrid) {
+export function animateDfsMaze(order, grid, isBlackWhite) {
   var Rainbow = require('rainbowvis.js');
   var myRainbow = new Rainbow();
   var max = 0
@@ -62,8 +62,14 @@ export function animateDfsMaze(order, grid, setGrid) {
   })
   setTimeout(() => {
     var i = 0
-    for (; i < order.length; i++) {
-      animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))))
+    if (isBlackWhite) {
+      for (; i < order.length; i++) {
+        animateNode(order[i], i, grid, '#FFFFFF')
+      }
+    } else {
+      for (; i < order.length; i++) {
+        animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))))
+      }
     }
   }, 1000)
 

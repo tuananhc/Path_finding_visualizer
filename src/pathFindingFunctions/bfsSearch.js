@@ -87,32 +87,32 @@ export function bfsSearch(startingNode, endingNode, grid) {
 	return [result, path]
 }
 
-export function animateBfsSearch([visitOrder, path]) {
+export function animateBfsSearch([visitOrder, path], nodeSize, isBlackWhite) {
 	for (var i = 0; i <= visitOrder.length; i++) {
 		if (i === visitOrder.length) {
 			setTimeout(() => {
 				for (var j = 0; j < path.length; j++) {
-					animatePath(path[j], j)
+					animatePath(path[j], j, nodeSize)
 				}
 			}, 10 * i + 100)
 			return
 		}
 		var node = visitOrder[i]
-		animateSearch(node, i)
+		animateSearch(node, i, nodeSize, isBlackWhite)
 	}
 }
 
-function animateSearch(node, time) {
+function animateSearch(node, time, nodeSize, isBlackWhite) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 15) + node.col)),
+			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / nodeSize) + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
 			],
 			background: [
-				{ value: '#0CECDD', easing: 'linear', duration: 500 },
-				{ value: '#7DEDFF', easing: 'linear', duration: 500 },
+				{ value: (isBlackWhite) ? '#7DEDFF' : '#FFFFFF', easing: 'linear', duration: 500 },
+				{ value: (isBlackWhite) ? '#0CECDD' : '#FFFFFF', easing: 'linear', duration: 500 },
 			],
 			borderRadius: [
 				{ value: '20%', easing: 'linear', duration: 1000 },
@@ -122,17 +122,17 @@ function animateSearch(node, time) {
 	}, 10 * time)
 }
 
-function animatePath(node, time) {
+function animatePath(node, time, nodeSize) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / 15) + node.col)),
+			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / nodeSize) + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
 			],
 			background: [
-				{ value: '#DF2E2E', easing: 'linear', duration: 500 },
 				{ value: '#FF7600', easing: 'linear', duration: 500 },
+				{ value: '#DF2E2E', easing: 'linear', duration: 500 },
 			],
 			borderRadius: [
 				{ value: '20%', easing: 'linear', duration: 1000 },
