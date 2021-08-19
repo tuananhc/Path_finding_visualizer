@@ -23,3 +23,19 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
+
+.gradient {
+  background: linear-gradient(
+    to right, 
+    #ff0000 0%, 
+    #ff4d00 10%, 
+    #ff9900 20%,  
+    #ffe500 30%, 
+    #ccff00 40%, 
+    #80ff00 50%, 
+    #33ff00 60%, 
+    #00e619 70%, 
+    #009966 80%, 
+    #004db3 90%, 
+    #0000ff 100%)
+}

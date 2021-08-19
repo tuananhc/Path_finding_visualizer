@@ -1,7 +1,7 @@
 import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState, useEffect } from 'react';
-import { Button, Select, MenuItem } from '@material-ui/core';
+import { Button, Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 import { bfsSearch, animateBfsSearch } from './pathFindingFunctions/bfsSearch';
 import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze'
 import xmark from './assets/close.png'
@@ -21,6 +21,15 @@ function App() {
   const [grid, setGrid] = useState(createGrid())
   const [isGrid, setIsGrid] = useState(true)
   const [isBlackWhite, setIsBlackWhite] = useState(false)
+  const [searchAlgorithm, setSearchAlgorithm] = useState('bfs')
+  const [mazeAlgorithm, setMazeAlgorithm] = useState('dfs')
+
+  const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    }
+  }));
 
   const styles = {
     node: {
@@ -51,6 +60,7 @@ function App() {
   }, [mazeSize])
 
   useEffect(() => {
+    setGrid(blankGrid)
     setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
     setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
   }, [nodeSize])
@@ -191,117 +201,142 @@ function App() {
 
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
-      <div style={{ height: 200, width: '100%', backgroundColor: 'teal' }}>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ width: 100 }}
-          onClick={() => {
-            animateBfsSearch(bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid), nodeSize, isBlackWhite)
-          }}
-        >
-          Start
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ width: 100 }}
-          onClick={() => {
-            setGrid(blankGrid)
-            setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-            setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
-            anime({
-              targets: '.node',
-              background: '#FFFFFF'
-            })
-          }}
-        >
-          Reset
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          style={{ width: 100 }}
-          onClick={() => {
-            animateDfsMaze(createDfsMaze(grid, setGrid), grid, isBlackWhite)
-          }}
-        >
-          Maze
-        </Button>
+      <div style={{ height: 200, width: '100%', backgroundColor: 'lightgray' }}>
+
         <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div style={{ margin: '10px 20px' }}>
-            <p>Maze size</p>
-            <Select
-              value={mazeSize}
-              onChange={(event) => setMazeSize(event.target.value)}
-            >
-              <MenuItem value={'very small'}>Very small</MenuItem>
-              <MenuItem value={'small'}>Small</MenuItem>
-              <MenuItem value={'medium'}>Medium</MenuItem>
-              <MenuItem value={'big'}>Big</MenuItem>
-              <MenuItem value={'very big'}>Very big</MenuItem>
-            </Select>
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined'>
+              <InputLabel>Maze size</InputLabel>
+              <Select
+                value={mazeSize}
+                onChange={(event) => setMazeSize(event.target.value)}
+              >
+                <MenuItem value={'very small'}>Very small</MenuItem>
+                <MenuItem value={'small'}>Small</MenuItem>
+                <MenuItem value={'medium'}>Medium</MenuItem>
+                <MenuItem value={'big'}>Big</MenuItem>
+                <MenuItem value={'very big'}>Very big</MenuItem>
+              </Select>
+            </FormControl>
           </div>
 
-          <div style={{ margin: '10px 20px' }}>
-            <p>Search algorithm</p>
-            <Select
-              value={mazeSize}
-              onChange={(event) => { console.log(event.target.value) }}
-            >
-              <MenuItem value={'bfs'}>Breadth First Search</MenuItem>
-            </Select>
+          <div style={{ margin: 30, width: 200 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 200, backgroundColor: 'red' }}>
+              <InputLabel styles={{ minWidth: 200, backgroundColor: 'red' }}>Search algorithm</InputLabel>
+              <Select
+                value={searchAlgorithm}
+                onChange={(event) => setSearchAlgorithm(event.target.value)}
+              >
+                <MenuItem value={'bfs'}>Breadth First Search</MenuItem>
+              </Select>
+            </FormControl>
           </div>
 
-          <div style={{ margin: '10px 20px' }}>
-            <p>Maze generating algorithm</p>
-            <Select
-              value={mazeSize}
-              onChange={(event) => setMazeSize(event.target.value)}
-            >
-              <MenuItem value={'dfs'}>Randomized Depth First Search</MenuItem>
-            </Select>
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Maze generating algorithm</InputLabel>
+              <Select
+                value={mazeAlgorithm}
+                onChange={(event) => setMazeAlgorithm(event.target.value)}
+              >
+                <MenuItem value={'dfs'}>Randomized Depth First Search</MenuItem>
+              </Select>
+            </FormControl>
+
           </div>
 
-          <div style={{ margin: '10px 20px' }}>
-            <p>Show grid</p>
-            <Select
-              value={isGrid}
-              onChange={(event) => setIsGrid(event.target.value)}
-            >
-              <MenuItem value={true}>Yes</MenuItem>
-              <MenuItem value={false}>No</MenuItem>
-            </Select>
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Show grid</InputLabel>
+              <Select
+                value={isGrid}
+                onChange={(event) => setIsGrid(event.target.value)}
+              >
+                <MenuItem value={true}>Yes</MenuItem>
+                <MenuItem value={false}>No</MenuItem>
+              </Select>
+            </FormControl>
           </div>
 
-          <div style={{ margin: '10px 20px' }}>
-            <p>Maze style</p>
-            <Select
-              value={isBlackWhite}
-              onChange={(event) => setIsBlackWhite(event.target.value)}
-            >
-              <MenuItem value={true}>Black & White</MenuItem>
-              <MenuItem value={false}>Color</MenuItem>
-            </Select>
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Maze style</InputLabel>
+              <Select
+                value={isBlackWhite}
+                onChange={(event) => setIsBlackWhite(event.target.value)}
+              >
+                <MenuItem value={true}>Black & White</MenuItem>
+                <MenuItem value={false}>Color</MenuItem>
+              </Select>
+            </FormControl>
           </div>
 
-          <div style={{ margin: '10px 20px' }}>
-            <p>Mode</p>
-            <Select
-              value={mode}
-              onChange={(event) => setMode(event.target.value)}
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Mode</InputLabel>
+              <Select
+                value={mode}
+                onChange={(event) => setMode(event.target.value)}
+              >
+                <MenuItem value={'atomatic'}>Automatic</MenuItem>
+                <MenuItem value={'manual'}>Manual</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </div>
+        <div style={{ width: '100%', display: 'flex', flex: 1, flexDirection: 'row' }}>
+          <div style={{ display: 'flex', flex: 0.2, flexDirection: 'column' }}>
+            <div style={{ display: 'flex', width: '100%', flexDirection: 'row', marginLeft: 30 }}>
+              <div style={{ display: 'flex', flex: 0.5 }}>Nearest</div>
+              <div style={{ display: 'flex', flex: 0.5, justifyContent: 'flex-end' }}>Furthest</div>
+            </div>
+            <div class='gradient' style={{ width: '100%', height: 12.5, marginLeft: 30 }} />
+          </div>
+          <div style={{ display: 'flex', flex: 0.6, alignItems: 'center', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ width: 100, margin: '20px 40px' }}
+              onClick={() => {
+                setGrid(blankGrid)
+                setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
+                setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
+                anime({
+                  targets: '.node',
+                  background: '#FFFFFF'
+                })
+              }}
             >
-              <MenuItem value={'atomatic'}>Automatic</MenuItem>
-              <MenuItem value={'manual'}>Manual</MenuItem>
-            </Select>
+              Reset
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ width: 100, margin: '20px 40px' }}
+              onClick={() => {
+                animateBfsSearch(bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid), nodeSize, isBlackWhite)
+              }}
+            >
+              Start
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ width: 100, margin: '20px 40px' }}
+              onClick={() => {
+                animateDfsMaze(createDfsMaze(grid, setGrid), grid, isBlackWhite)
+              }}
+            >
+              Maze
+            </Button>
           </div>
         </div>
       </div>
 
-      <div >
+      <div>
         {renderGrid(grid)}
       </div>
-    </div>
+    </div >
   );
 }
 
