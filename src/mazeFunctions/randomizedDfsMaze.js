@@ -1,10 +1,19 @@
 import anime from 'animejs/lib/anime.es'
 
-export function createDfsMaze(grid, setGrid) {
+export function createDfsMaze(grid, setGrid, isBlackWhite) {
   var visited = []
   var newGrid = [...grid]
   var queue = [newGrid[1][1]]
   var order = []
+  // var Rainbow = require('rainbowvis.js');
+  // var myRainbow = new Rainbow();
+  
+  // anime({
+  //   targets: '.node',
+  //   background: '#000000',
+  //   duration: 1000,
+  //   easing: 'linear',
+  // })
 
   for (var i = 0; i < newGrid.length; i++) {
     var visit = []
@@ -16,32 +25,41 @@ export function createDfsMaze(grid, setGrid) {
   }
   newGrid[1][1].distance = 0
 
-  while (queue.length > 0) {
-    if (queue.length >= 4) {
-      var randIndex = Math.floor(Math.random() * 4)
-      var node = queue[randIndex]
-      queue.splice(randIndex, 1)
-    } else {
-      var randIndex = Math.floor(Math.random() * queue.length)
-      var node = queue[randIndex]
-      queue.splice(randIndex, 1)
-    }
-    if (!visited[node.row][node.col] && checkAdjacent(node, newGrid) && checkDiagonal(node, newGrid)) {
-      order.push(node)
-      newGrid[node.row][node.col].isWall = false
-      visited[node.row][node.col] = true
-
-      var neighbours = thisGetNeighbour(node, newGrid)
-      for (var i = 0; i < neighbours.length; i++) {
-        queue.unshift(neighbours[i])
-        newGrid[neighbours[i].row][neighbours[i].col].distance = newGrid[node.row][node.col].distance + 1
+  // setTimeout(() => {
+    var time = 0
+    while (queue.length > 0) {
+      if (queue.length >= 4) {
+        var randIndex = Math.floor(Math.random() * 4)
+        var node = queue[randIndex]
+        queue.splice(randIndex, 1)
+      } else {
+        var randIndex = Math.floor(Math.random() * queue.length)
+        var node = queue[randIndex]
+        queue.splice(randIndex, 1)
+      }
+      if (!visited[node.row][node.col] && checkAdjacent(node, newGrid) && checkDiagonal(node, newGrid)) {
+        order.push(node)
+        newGrid[node.row][node.col].isWall = false
+        visited[node.row][node.col] = true
+        // if (isBlackWhite) {
+        //   animateNode(node, time, newGrid, '#FFFFFF')
+        // } else {
+        //   animateNode(node, time, newGrid, '#'.concat(myRainbow.colourAt(Math.floor(node.distance / (newGrid[0].length * newGrid.length / 4) * 100))))
+        // }
+        // time++
+        var neighbours = thisGetNeighbour(node, newGrid)
+        for (var i = 0; i < neighbours.length; i++) {
+          queue.unshift(neighbours[i])
+          newGrid[neighbours[i].row][neighbours[i].col].distance = newGrid[node.row][node.col].distance + 1
+        }
       }
     }
-  }
+  // }, 1000)
+  
   setTimeout(() => {
     setGrid(newGrid)
   }, order.length * 10 + 1500)
-  console.log(order)
+
   return order
 }
 
@@ -132,12 +150,10 @@ function thisGetNeighbour(node, grid) {
 }
 
 function animateNode(node, time, grid, color) {
-
   setTimeout(() => {
     anime({
       targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
       background: color,
-
     })
-  }, 10 * time)
+  }, 5 * time)
 }

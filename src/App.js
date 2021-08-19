@@ -24,13 +24,6 @@ function App() {
   const [searchAlgorithm, setSearchAlgorithm] = useState('bfs')
   const [mazeAlgorithm, setMazeAlgorithm] = useState('dfs')
 
-  const useStyles = makeStyles((theme) => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    }
-  }));
-
   const styles = {
     node: {
       width: (isGrid) ? nodeSize - 1 : nodeSize,
@@ -202,7 +195,6 @@ function App() {
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
       <div style={{ height: 200, width: '100%', backgroundColor: 'lightgray' }}>
-
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined'>
@@ -265,8 +257,8 @@ function App() {
                 value={isBlackWhite}
                 onChange={(event) => setIsBlackWhite(event.target.value)}
               >
-                <MenuItem value={true}>Black & White</MenuItem>
                 <MenuItem value={false}>Color</MenuItem>
+                <MenuItem value={true}>Black & White</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -278,7 +270,7 @@ function App() {
                 value={mode}
                 onChange={(event) => setMode(event.target.value)}
               >
-                <MenuItem value={'atomatic'}>Automatic</MenuItem>
+                <MenuItem value={'automatic'}>Automatic</MenuItem>
                 <MenuItem value={'manual'}>Manual</MenuItem>
               </Select>
             </FormControl>
@@ -314,7 +306,7 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                animateBfsSearch(bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid), nodeSize, isBlackWhite)
+                bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
               }}
             >
               Start
@@ -324,7 +316,7 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                animateDfsMaze(createDfsMaze(grid, setGrid), grid, isBlackWhite)
+                animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
               }}
             >
               Maze

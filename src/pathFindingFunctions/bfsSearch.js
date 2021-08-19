@@ -30,32 +30,29 @@ function getNeighbours(curNode, grid) {
 	return neighbour
 }
 
-export function bfsSearch(startingNode, endingNode, grid) {
+export function bfsSearch(startingNode, endingNode, grid, isBlackWhite) {
 	var width = grid[0].length
 	var queue = [startingNode]
 	var visited = []
 	var prev = []
 	var result = [startingNode]
 	var found = false
-	var path = []
-	var dist = []
 	for (var i = 0; i < grid.length; i++) {
 		var visit = []
 		var pre = []
-		var dis = []
 		for (var j = 0; j < width; j++) {
 			visit.push(false)
 			pre.push(-1)
-			dis.push(-1)
 		}
 		visited.push(visit)
 		prev.push(pre)
-		dist.push(dis)
 	}
+  var time = 0
 	while (queue.length > 0 && !found) {
 		var node = queue[0]
 		queue.splice(0, 1)
 		visited[node.row][node.col] = true
+    animateSearch(node, time, grid, isBlackWhite)
 		var neighbours = getNeighbours(node, grid)
 		for (var i = 0; i < neighbours.length; i++) {
 			var neighbour = neighbours[i]
@@ -63,49 +60,34 @@ export function bfsSearch(startingNode, endingNode, grid) {
 				result.push(neighbour)
 				found = true
 				prev[neighbour.row][neighbour.col] = node
-				dist[neighbour.row][neighbour.col] = dist[node.row][node.col] + 1
 				break
 			}
 			if (!visited[neighbour.row][neighbour.col]) {
 				queue.push(neighbour)
 				visited[neighbour.row][neighbour.col] = true
+        animateSearch(neighbour, time, grid, isBlackWhite)
 				prev[neighbour.row][neighbour.col] = node
-				dist[neighbour.row][neighbour.col] = dist[node.row][node.col] + 1
 				result.push(neighbour)
 			}
 		}
 	}
-	if (found) {
-		var cur = result[result.length - 1]
-		path.push(cur)
-		while (cur != startingNode) {
-			path.push(cur)
-			cur = prev[cur.row][cur.col]
-		}
-		path.push(startingNode)
-	}
-	return [result, path]
+  setTimeout(() => {
+    if (found) {
+      var cur = result[result.length - 1]
+      animatePath(cur, time, grid)
+      while (cur != startingNode) {
+        cur = prev[cur.row][cur.col]
+        animatePath(cur, time, grid)
+      }
+    }
+  }, 100)
+	return result
 }
 
-export function animateBfsSearch([visitOrder, path], nodeSize, isBlackWhite) {
-	for (var i = 0; i <= visitOrder.length; i++) {
-		if (i === visitOrder.length) {
-			setTimeout(() => {
-				for (var j = 0; j < path.length; j++) {
-					animatePath(path[j], j, nodeSize)
-				}
-			}, 10 * i + 100)
-			return
-		}
-		var node = visitOrder[i]
-		animateSearch(node, i, nodeSize, isBlackWhite)
-	}
-}
-
-function animateSearch(node, time, nodeSize, isBlackWhite) {
+function animateSearch(node, time, grid, isBlackWhite) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / nodeSize) + node.col)),
+			targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
@@ -119,13 +101,13 @@ function animateSearch(node, time, nodeSize, isBlackWhite) {
 				{ value: '0%', easing: 'linear', duration: 500 },
 			],
 		})
-	}, 10 * time)
+	}, 5 * time)
 }
 
-function animatePath(node, time, nodeSize) {
+function animatePath(node, time, grid) {
 	setTimeout(() => {
 		anime({
-			targets: document.getElementById("node".concat(node.row * Math.floor(window.innerWidth / nodeSize) + node.col)),
+			targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
 			scale: [
 				{ value: 1.1, easing: 'easeOutSine', duration: 500 },
 				{ value: 1, easing: 'easeInOutQuad', duration: 1200 }
@@ -139,5 +121,5 @@ function animatePath(node, time, nodeSize) {
 				{ value: '0%', easing: 'linear', duration: 500 },
 			],
 		})
-	}, 15 * time)
+	}, 10 * time)
 }
