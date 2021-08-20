@@ -2,7 +2,9 @@ import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState, useEffect } from 'react';
 import { Button, Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
-import { bfsSearch, animateBfsSearch } from './pathFindingFunctions/bfsSearch';
+import { bfsSearch } from './pathFindingFunctions/bfsSearch';
+import { dfsSearch } from './pathFindingFunctions/dfsSearch';
+import { createBfsMaze, animateBfsMaze } from './mazeFunctions/randomizedBfsMaze';
 import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze'
 import xmark from './assets/close.png'
 import arrow from './assets/right-arrow.png'
@@ -220,6 +222,7 @@ function App() {
                 onChange={(event) => setSearchAlgorithm(event.target.value)}
               >
                 <MenuItem value={'bfs'}>Breadth First Search</MenuItem>
+                <MenuItem value={'dfs'}>Depth First Search</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -231,7 +234,8 @@ function App() {
                 value={mazeAlgorithm}
                 onChange={(event) => setMazeAlgorithm(event.target.value)}
               >
-                <MenuItem value={'dfs'}>Randomized Depth First Search</MenuItem>
+                <MenuItem value={'dfs'}>Randomized Depth First Maze</MenuItem>
+                <MenuItem value={'bfs'}>Randomized Breadth First Maze</MenuItem>
               </Select>
             </FormControl>
 
@@ -306,7 +310,11 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
+                if (searchAlgorithm === 'bfs') {
+                  bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
+                } else if (searchAlgorithm === 'dfs') {
+                  dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
+                }
               }}
             >
               Start
@@ -316,7 +324,11 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
+                if (mazeAlgorithm === 'bfs') {
+                  animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
+                } else if (mazeAlgorithm === 'dfs') {
+                  animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
+                }
               }}
             >
               Maze
@@ -328,7 +340,7 @@ function App() {
       <div>
         {renderGrid(grid)}
       </div>
-    </div >
+    </div>
   );
 }
 
