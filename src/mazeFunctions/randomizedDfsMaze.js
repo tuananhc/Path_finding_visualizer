@@ -7,7 +7,7 @@ export function createDfsMaze(grid, setGrid, isBlackWhite) {
   var order = []
   // var Rainbow = require('rainbowvis.js');
   // var myRainbow = new Rainbow();
-  
+
   // anime({
   //   targets: '.node',
   //   background: '#000000',
@@ -26,36 +26,36 @@ export function createDfsMaze(grid, setGrid, isBlackWhite) {
   newGrid[1][1].distance = 0
 
   // setTimeout(() => {
-    var time = 0
-    while (queue.length > 0) {
-      if (queue.length >= 4) {
-        var randIndex = Math.floor(Math.random() * 4)
-        var node = queue[randIndex]
-        queue.splice(randIndex, 1)
-      } else {
-        var randIndex = Math.floor(Math.random() * queue.length)
-        var node = queue[randIndex]
-        queue.splice(randIndex, 1)
-      }
-      if (!visited[node.row][node.col] && checkAdjacent(node, newGrid) && checkDiagonal(node, newGrid)) {
-        order.push(node)
-        newGrid[node.row][node.col].isWall = false
-        visited[node.row][node.col] = true
-        // if (isBlackWhite) {
-        //   animateNode(node, time, newGrid, '#FFFFFF')
-        // } else {
-        //   animateNode(node, time, newGrid, '#'.concat(myRainbow.colourAt(Math.floor(node.distance / (newGrid[0].length * newGrid.length / 4) * 100))))
-        // }
-        // time++
-        var neighbours = thisGetNeighbour(node, newGrid)
-        for (var i = 0; i < neighbours.length; i++) {
-          queue.unshift(neighbours[i])
-          newGrid[neighbours[i].row][neighbours[i].col].distance = newGrid[node.row][node.col].distance + 1
-        }
+  var time = 0
+  while (queue.length > 0) {
+    if (queue.length >= 4) {
+      var randIndex = Math.floor(Math.random() * 4)
+      var node = queue[randIndex]
+      queue.splice(randIndex, 1)
+    } else {
+      var randIndex = Math.floor(Math.random() * queue.length)
+      var node = queue[randIndex]
+      queue.splice(randIndex, 1)
+    }
+    if (!visited[node.row][node.col] && checkAdjacent(node, newGrid) && checkDiagonal(node, newGrid)) {
+      order.push(node)
+      newGrid[node.row][node.col].isWall = false
+      visited[node.row][node.col] = true
+      // if (isBlackWhite) {
+      //   animateNode(node, time, newGrid, '#FFFFFF')
+      // } else {
+      //   animateNode(node, time, newGrid, '#'.concat(myRainbow.colourAt(Math.floor(node.distance / (newGrid[0].length * newGrid.length / 4) * 100))))
+      // }
+      // time++
+      var neighbours = thisGetNeighbour(node, newGrid)
+      for (var i = 0; i < neighbours.length; i++) {
+        queue.unshift(neighbours[i])
+        newGrid[neighbours[i].row][neighbours[i].col].distance = newGrid[node.row][node.col].distance + 1
       }
     }
+  }
   // }, 1000)
-  
+
   setTimeout(() => {
     setGrid(newGrid)
   }, order.length * 10 + 1500)
@@ -63,7 +63,7 @@ export function createDfsMaze(grid, setGrid, isBlackWhite) {
   return order
 }
 
-export function animateDfsMaze(order, grid, isBlackWhite) {
+export function animateDfsMaze(order, grid, isBlackWhite, speed) {
   var Rainbow = require('rainbowvis.js');
   var myRainbow = new Rainbow();
   var max = 0
@@ -82,11 +82,11 @@ export function animateDfsMaze(order, grid, isBlackWhite) {
     var i = 0
     if (isBlackWhite) {
       for (; i < order.length; i++) {
-        animateNode(order[i], i, grid, '#FFFFFF')
+        animateNode(order[i], i, grid, '#FFFFFF', speed)
       }
     } else {
       for (; i < order.length; i++) {
-        animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))))
+        animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))), speed)
       }
     }
   }, 1000)
@@ -149,11 +149,11 @@ function thisGetNeighbour(node, grid) {
   return neighbour
 }
 
-function animateNode(node, time, grid, color) {
+function animateNode(node, time, grid, color, speed) {
   setTimeout(() => {
     anime({
       targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
       background: color,
     })
-  }, 5 * time)
+  }, speed * time)
 }

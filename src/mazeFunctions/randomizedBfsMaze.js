@@ -8,12 +8,12 @@ export function createBfsMaze(grid, setGrid, isBlackWhite) {
   // var Rainbow = require('rainbowvis.js');
   // var myRainbow = new Rainbow();
 
-  // anime({
-  //   targets: '.node',
-  //   background: '#000000',
-  //   duration: 1000,
-  //   easing: 'linear',
-  // })
+  anime({
+    targets: '.node',
+    background: '#000000',
+    duration: 1000,
+    easing: 'linear',
+  })
 
   for (var i = 0; i < newGrid.length; i++) {
     var visit = []
@@ -57,7 +57,7 @@ export function createBfsMaze(grid, setGrid, isBlackWhite) {
   return order
 }
 
-export function animateBfsMaze(order, grid, isBlackWhite) {
+export function animateBfsMaze(order, grid, isBlackWhite, speed) {
   var Rainbow = require('rainbowvis.js');
   var myRainbow = new Rainbow();
   var max = 0
@@ -66,21 +66,21 @@ export function animateBfsMaze(order, grid, isBlackWhite) {
       max = order[i].distance
     }
   }
-  anime({
-    targets: '.node',
-    background: '#000000',
-    duration: 500,
-    easing: 'linear',
-  })
+  // anime({
+  //   targets: '.node',
+  //   background: '#000000',
+  //   duration: 500,
+  //   easing: 'linear',
+  // })
   setTimeout(() => {
     var i = 0
     if (isBlackWhite) {
       for (; i < order.length; i++) {
-        animateNode(order[i], i, grid, '#FFFFFF')
+        animateNode(order[i], i, grid, '#FFFFFF', speed)
       }
     } else {
       for (; i < order.length; i++) {
-        animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))))
+        animateNode(order[i], i, grid, '#'.concat(myRainbow.colourAt(Math.floor(order[i].distance / max * 100))), speed)
       }
     }
   }, 1000)
@@ -143,11 +143,11 @@ function thisGetNeighbour(node, grid) {
   return neighbour
 }
 
-function animateNode(node, time, grid, color) {
+function animateNode(node, time, grid, color, speed) {
   setTimeout(() => {
     anime({
       targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
       background: color,
     })
-  }, 2 * time)
+  }, speed * time)
 }

@@ -30,7 +30,7 @@ function getNeighbours(curNode, grid) {
 	return neighbour
 }
 
-export function bfsSearch(startingNode, endingNode, grid, isBlackWhite) {
+export function bfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
 	var width = grid[0].length
 	var queue = [startingNode]
 	var visited = []
@@ -47,12 +47,12 @@ export function bfsSearch(startingNode, endingNode, grid, isBlackWhite) {
 		visited.push(visit)
 		prev.push(pre)
 	}
-  var time = 0
+	var time = 0
 	while (queue.length > 0 && !found) {
 		var node = queue[0]
 		queue.splice(0, 1)
 		visited[node.row][node.col] = true
-    animateSearch(node, time, grid, isBlackWhite)
+		animateSearch(node, time, grid, isBlackWhite, speed)
 		var neighbours = getNeighbours(node, grid)
 		for (var i = 0; i < neighbours.length; i++) {
 			var neighbour = neighbours[i]
@@ -65,26 +65,26 @@ export function bfsSearch(startingNode, endingNode, grid, isBlackWhite) {
 			if (!visited[neighbour.row][neighbour.col]) {
 				queue.push(neighbour)
 				visited[neighbour.row][neighbour.col] = true
-        animateSearch(neighbour, time, grid, isBlackWhite)
+				animateSearch(neighbour, time, grid, isBlackWhite, speed)
 				prev[neighbour.row][neighbour.col] = node
 				result.push(neighbour)
 			}
 		}
 	}
-  setTimeout(() => {
-    if (found) {
-      var cur = result[result.length - 1]
-      animatePath(cur, time, grid)
-      while (cur != startingNode) {
-        cur = prev[cur.row][cur.col]
-        animatePath(cur, time, grid)
-      }
-    }
-  }, 100)
+	setTimeout(() => {
+		if (found) {
+			var cur = result[result.length - 1]
+			animatePath(cur, time, grid)
+			while (cur != startingNode) {
+				cur = prev[cur.row][cur.col]
+				animatePath(cur, time, grid)
+			}
+		}
+	}, 100)
 	return result
 }
 
-function animateSearch(node, time, grid, isBlackWhite) {
+function animateSearch(node, time, grid, isBlackWhite, speed) {
 	setTimeout(() => {
 		anime({
 			targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
@@ -101,7 +101,7 @@ function animateSearch(node, time, grid, isBlackWhite) {
 				{ value: '0%', easing: 'linear', duration: 500 },
 			],
 		})
-	}, 5 * time)
+	}, speed * time)
 }
 
 function animatePath(node, time, grid) {

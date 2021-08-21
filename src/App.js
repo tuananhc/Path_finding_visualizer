@@ -25,6 +25,7 @@ function App() {
   const [isBlackWhite, setIsBlackWhite] = useState(false)
   const [searchAlgorithm, setSearchAlgorithm] = useState('bfs')
   const [mazeAlgorithm, setMazeAlgorithm] = useState('dfs')
+  const [speed, setSpeed] = useState(5)
 
   const styles = {
     node: {
@@ -43,14 +44,19 @@ function App() {
   useEffect(() => {
     if (mazeSize === 'very small') {
       setNodeSize(25)
+      setSpeed(10)
     } else if (mazeSize === 'small') {
       setNodeSize(20)
+      setSpeed(10)
     } else if (mazeSize === 'medium') {
       setNodeSize(15)
+      setSpeed(5)
     } else if (mazeSize === 'big') {
       setNodeSize(10)
+      setSpeed(3)
     } else if (mazeSize === 'very big') {
       setNodeSize(5)
+      setSpeed(3)
     }
   }, [mazeSize])
 
@@ -294,13 +300,18 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                setGrid(blankGrid)
-                setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-                setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
-                anime({
-                  targets: '.node',
-                  background: '#FFFFFF'
-                })
+                setGrid([])
+                anime.remove()
+                setTimeout(() => {
+                  setGrid(blankGrid)
+                  setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
+                  setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
+                  anime({
+                    targets: '.node',
+                    background: '#FFFFFF'
+                  })
+                }, 100)
+
               }}
             >
               Reset
@@ -311,9 +322,9 @@ function App() {
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
                 if (searchAlgorithm === 'bfs') {
-                  bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
+                  bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 } else if (searchAlgorithm === 'dfs') {
-                  dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite)
+                  dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 }
               }}
             >
@@ -325,9 +336,9 @@ function App() {
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
                 if (mazeAlgorithm === 'bfs') {
-                  animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
+                  animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'dfs') {
-                  animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite)
+                  animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
                 }
               }}
             >
