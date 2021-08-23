@@ -1,19 +1,42 @@
 import anime from 'animejs/lib/anime.es'
 
-export function createDfsMaze(grid, setGrid, isBlackWhite) {
+export function createDfsMaze(grid, setGrid, isBlackWhite, speed) {
   var visited = []
   var newGrid = [...grid]
   var queue = [newGrid[1][1]]
   var order = []
   // var Rainbow = require('rainbowvis.js');
-  // var myRainbow = new Rainbow();
+  // var rainbow = new Rainbow();
+  // rainbow.setSpectrum(
+  //   "#ff0000",
+  //   "#ff4d00",
+  //   "#ff9900",
+  //   "#ffe500",
+  //   "#ccff00",
+  //   "#80ff00",
+  //   "#33ff00",
+  //   "#00e619",
+  //   "#009966",
+  //   "#004db3",
+  //   "#0000ff",
+  //   "#004db3",
+  //   "#009966",
+  //   "#00e619",
+  //   "#33ff00",
+  //   "#80ff00",
+  //   "#ccff00",
+  //   "#ffe500",
+  //   "#ff9900",
+  //   "#ff4d00",
+  // )
+  // rainbow.setNumberRange(0, 200)
 
-  // anime({
-  //   targets: '.node',
-  //   background: '#000000',
-  //   duration: 1000,
-  //   easing: 'linear',
-  // })
+  anime({
+    targets: '.node',
+    background: '#000000',
+    duration: 1000,
+    easing: 'linear',
+  })
 
   for (var i = 0; i < newGrid.length; i++) {
     var visit = []
@@ -42,11 +65,11 @@ export function createDfsMaze(grid, setGrid, isBlackWhite) {
       newGrid[node.row][node.col].isWall = false
       visited[node.row][node.col] = true
       // if (isBlackWhite) {
-      //   animateNode(node, time, newGrid, '#FFFFFF')
+      //   // animateNode(node, time, newGrid, '#FFFFFF', speed)
       // } else {
-      //   animateNode(node, time, newGrid, '#'.concat(myRainbow.colourAt(Math.floor(node.distance / (newGrid[0].length * newGrid.length / 4) * 100))))
+      //   animateNode(node, time, newGrid, '#'.concat(rainbow.colourAt(node.distance % 200)), speed)
       // }
-      // time++
+      time++
       var neighbours = thisGetNeighbour(node, newGrid)
       for (var i = 0; i < neighbours.length; i++) {
         queue.unshift(neighbours[i])

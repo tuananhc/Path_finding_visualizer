@@ -1,0 +1,26 @@
+{
+  "dfsSearch": {
+    "name": "Depth First Search",
+    "descriptions": ""
+  },
+  "bfsSearch": {
+    "name": "Breadth First Search",
+    "descriptions": ""
+  },
+  "dijkstraSearch": {
+    "name": "Depth First Search",
+    "descriptions": ""
+  },
+  "dfsMaze": {
+    "name": "Depth First Maze",
+    "descriptions": ""
+  },
+  "bfsMaze": {
+    "name": "Breadth First Maze",
+    "descriptions": ""
+  },
+  "PrimsMaze": {
+    "name": "Prim's Maze",
+    "descriptions": ""
+  }
+}

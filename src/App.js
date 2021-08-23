@@ -1,7 +1,8 @@
 import './App.css';
 import anime from 'animejs/lib/anime.es.js';
 import React, { useState, useEffect } from 'react';
-import { Button, Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
+import { Button, Select, MenuItem, InputLabel, FormControl } from '@material-ui/core';
+import Modal from 'react-modal'
 import { bfsSearch } from './pathFindingFunctions/bfsSearch';
 import { dfsSearch } from './pathFindingFunctions/dfsSearch';
 import { dijkstraSearch } from './pathFindingFunctions/dijkstra';
@@ -10,6 +11,8 @@ import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze
 import { createPrimsMaze, animatePrimsMaze } from './mazeFunctions/primsMaze'
 import xmark from './assets/close.png'
 import arrow from './assets/right-arrow.png'
+import info from './assets/info.png'
+import description from './descriptions.json'
 
 function App() {
 
@@ -25,9 +28,11 @@ function App() {
   const [grid, setGrid] = useState(createGrid())
   const [isGrid, setIsGrid] = useState(true)
   const [isBlackWhite, setIsBlackWhite] = useState(false)
-  const [searchAlgorithm, setSearchAlgorithm] = useState('bfs')
-  const [mazeAlgorithm, setMazeAlgorithm] = useState('dfs')
+  const [searchAlgorithm, setSearchAlgorithm] = useState('bfsSearch')
+  const [mazeAlgorithm, setMazeAlgorithm] = useState('dfsMaze')
   const [speed, setSpeed] = useState(5)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalContent, setModalContent] = useState('')
 
   const styles = {
     node: {
@@ -203,30 +208,29 @@ function App() {
     )
   }
 
-  function createSelect(inputLabel, value, valueFunction, items) {
-    return (
-      <div style={{ margin: 30 }}>
-        <FormControl variant='outlined'>
-          <InputLabel>{inputLabel}</InputLabel>
-          <Select
-            value={value}
-            onChange={(event) => valueFunction(event.target.value)}
-          >
-            {items.map(item => {
-              return (
-                <MenuItem value={item.value}>{item.description}</MenuItem>
-              )
-            })}
-          </Select>
-        </FormControl>
-      </div>
-    )
-  }
-
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
+      <Modal
+        isOpen={modalVisible}
+        style={{
+          overlay: {
+            backgroundColor: ''
+          },
+          content: {
+            top: '25%',
+            left: '50%',
+            width: '30%',
+            height: '30%',
+            transform: 'translate(-50%, -50%)',
+          }
+        }}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <h3>{modalContent.name}</h3>
+        <p>{modalContent.description}</p>
+      </Modal>
       <div style={{ height: 200, width: '100%', backgroundColor: 'lightgray' }}>
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined'>
               <InputLabel>Maze size</InputLabel>
@@ -244,18 +248,20 @@ function App() {
           </div>
 
           <div style={{ margin: 30, width: 200 }}>
-            <FormControl variant='outlined' styles={{ minWidth: 200, backgroundColor: 'red' }}>
-              <InputLabel styles={{ minWidth: 200, backgroundColor: 'red' }}>Search algorithm</InputLabel>
+            <FormControl variant='outlined'>
+              <InputLabel>Search algorithm</InputLabel>
               <Select
                 value={searchAlgorithm}
-                onChange={(event) => setSearchAlgorithm(event.target.value)}
+                onChange={(event) => setSearchAlgorithm(event.target.value)
+                }
               >
-                <MenuItem value={'bfs'}>Breadth First Search</MenuItem>
-                <MenuItem value={'dfs'}>Depth First Search</MenuItem>
-                <MenuItem value={'dijkstra'}>Dijkstra Search Algorithm</MenuItem>
+                <MenuItem value={'bfsSearch'}>Breadth First Search</MenuItem>
+                <MenuItem value={'dfsSearch'}>Depth First Search</MenuItem>
+                <MenuItem value={'dijkstraSearch'}>Dijkstra Search Algorithm</MenuItem>
               </Select>
             </FormControl>
           </div>
+          <img src={info} style={{ width: 15, height: 15, marginLeft: -15 }} onClick={() => setModalVisible(!modalVisible)} />
 
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
@@ -264,13 +270,26 @@ function App() {
                 value={mazeAlgorithm}
                 onChange={(event) => setMazeAlgorithm(event.target.value)}
               >
-                <MenuItem value={'dfs'}>Randomized Depth First Maze</MenuItem>
-                <MenuItem value={'bfs'}>Randomized Breadth First Maze</MenuItem>
-                <MenuItem value={'prims'}>Prim's Maze</MenuItem>
+                <MenuItem value={'dfsMaze'}>Randomized Depth First Maze</MenuItem>
+                <MenuItem value={'bfsMaze'}>Randomized Breadth First Maze</MenuItem>
+                <MenuItem value={'primsMaze'}>Prim's Maze</MenuItem>
               </Select>
             </FormControl>
-
           </div>
+          <img
+            src={info}
+            style={{ width: 15, height: 15, marginLeft: -15 }}
+            onClick={() => {
+              if (mazeAlgorithm === 'bfsMaze') {
+                setModalContent(description.bfsMaze)
+              } else if (mazeAlgorithm === 'dfsMaze') {
+                setModalContent(description.dfsMaze)
+              } else if (mazeAlgorithm === 'primsMaze') {
+                setModalContent(description.PrimsMaze)
+              }
+              setModalVisible(!modalVisible)
+            }}
+          />
 
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
@@ -346,11 +365,11 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                if (searchAlgorithm === 'bfs') {
+                if (searchAlgorithm === 'bfsSearch') {
                   bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
-                } else if (searchAlgorithm === 'dfs') {
+                } else if (searchAlgorithm === 'dfsSearch') {
                   dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
-                } else if (searchAlgorithm === 'dijkstra') {
+                } else if (searchAlgorithm === 'dijkstraSearch') {
                   dijkstraSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 }
               }}
@@ -362,11 +381,11 @@ function App() {
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
               onClick={() => {
-                if (mazeAlgorithm === 'bfs') {
+                if (mazeAlgorithm === 'bfsMaze') {
                   animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
-                } else if (mazeAlgorithm === 'dfs') {
+                } else if (mazeAlgorithm === 'dfsMaze') {
                   animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
-                } else if (mazeAlgorithm === 'prims') {
+                } else if (mazeAlgorithm === 'primsMaze') {
                   animatePrimsMaze(createPrimsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
                 }
               }}
