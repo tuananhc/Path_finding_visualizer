@@ -4,8 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 import { bfsSearch } from './pathFindingFunctions/bfsSearch';
 import { dfsSearch } from './pathFindingFunctions/dfsSearch';
-import { createBfsMaze, animateBfsMaze } from './mazeFunctions/randomizedBfsMaze';
+import { dijkstraSearch } from './pathFindingFunctions/dijkstra';
+import { createBfsMaze, animateBfsMaze } from './mazeFunctions/randomizedBfsMaze'
 import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze'
+import { createPrimsMaze, animatePrimsMaze } from './mazeFunctions/primsMaze'
 import xmark from './assets/close.png'
 import arrow from './assets/right-arrow.png'
 
@@ -78,6 +80,7 @@ function App() {
           isStart: false,
           isEnd: false,
           distance: -1,
+          value: -1
         })
       }
       grids.push(row)
@@ -200,6 +203,26 @@ function App() {
     )
   }
 
+  function createSelect(inputLabel, value, valueFunction, items) {
+    return (
+      <div style={{ margin: 30 }}>
+        <FormControl variant='outlined'>
+          <InputLabel>{inputLabel}</InputLabel>
+          <Select
+            value={value}
+            onChange={(event) => valueFunction(event.target.value)}
+          >
+            {items.map(item => {
+              return (
+                <MenuItem value={item.value}>{item.description}</MenuItem>
+              )
+            })}
+          </Select>
+        </FormControl>
+      </div>
+    )
+  }
+
   return (
     <div style={{ height: window.innerHeight, overflow: 'hidden' }}>
       <div style={{ height: 200, width: '100%', backgroundColor: 'lightgray' }}>
@@ -229,6 +252,7 @@ function App() {
               >
                 <MenuItem value={'bfs'}>Breadth First Search</MenuItem>
                 <MenuItem value={'dfs'}>Depth First Search</MenuItem>
+                <MenuItem value={'dijkstra'}>Dijkstra Search Algorithm</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -242,6 +266,7 @@ function App() {
               >
                 <MenuItem value={'dfs'}>Randomized Depth First Maze</MenuItem>
                 <MenuItem value={'bfs'}>Randomized Breadth First Maze</MenuItem>
+                <MenuItem value={'prims'}>Prim's Maze</MenuItem>
               </Select>
             </FormControl>
 
@@ -325,6 +350,8 @@ function App() {
                   bfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 } else if (searchAlgorithm === 'dfs') {
                   dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
+                } else if (searchAlgorithm === 'dijkstra') {
+                  dijkstraSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 }
               }}
             >
@@ -339,6 +366,8 @@ function App() {
                   animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'dfs') {
                   animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
+                } else if (mazeAlgorithm === 'prims') {
+                  animatePrimsMaze(createPrimsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
                 }
               }}
             >
