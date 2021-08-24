@@ -22,9 +22,9 @@ function App() {
   const [mazeSize, setMazeSize] = useState('medium')
   const [isAutomatic, setIsAutomatic] = useState(true)
   const [nodeSize, setNodeSize] = useState(20)
-  const [startingNode, setStartingNode] = useState([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-  const [endingNode, setEndingNode] = useState([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
   const blankGrid = createGrid()
+  const [startingNode, setStartingNode] = useState([1, 1])
+  const [endingNode, setEndingNode] = useState([blankGrid.length - 2, blankGrid[0].length - 2])
   const [grid, setGrid] = useState(createGrid())
   const [isGrid, setIsGrid] = useState(true)
   const [isBlackWhite, setIsBlackWhite] = useState(false)
@@ -49,29 +49,29 @@ function App() {
   }
 
   useEffect(() => {
-    if (mazeSize === 'very small') {
-      setNodeSize(25)
-      setSpeed(10)
-    } else if (mazeSize === 'small') {
-      setNodeSize(20)
-      setSpeed(10)
+    if (mazeSize === 'small') {
+      setNodeSize(window.innerWidth / 75)
+      setSpeed(5)
     } else if (mazeSize === 'medium') {
-      setNodeSize(15)
+      setNodeSize(window.innerWidth / 100)
       setSpeed(5)
     } else if (mazeSize === 'big') {
-      setNodeSize(10)
-      setSpeed(3)
-    } else if (mazeSize === 'very big') {
-      setNodeSize(5)
+      setNodeSize(window.innerWidth / 150)
       setSpeed(3)
     }
   }, [mazeSize])
 
   useEffect(() => {
     setGrid(blankGrid)
-    setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-    setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
-  }, [nodeSize])
+    if (isAutomatic) {
+      setStartingNode([1, 1])
+      setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
+    } else {
+      setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
+      setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize * 3 / 4)])
+      setIsBlackWhite(true)
+    }
+  }, [nodeSize, isAutomatic])
 
   function createGrid() {
     var grids = []
@@ -114,57 +114,62 @@ function App() {
       <div
         style={{ width: nodeSize, height: nodeSize }}
         onMouseDown={() => {
-          if ((node.row === startingNode[0] && node.col === startingNode[1])) {
-            setIsMovingStart(true)
-            return
+          if (!isAutomatic) {
+            if ((node.row === startingNode[0] && node.col === startingNode[1])) {
+              setIsMovingStart(true)
+              return
+            }
+            if ((node.row === endingNode[0] && node.col === endingNode[1])) {
+              setIsMovingEnd(true)
+              return
+            }
+            var newGrid = [...grid]
+            var curNode = newGrid[node.row][node.col]
+            curNode.isWall = !node.isWall
+            newGrid[node.row][node.col] = curNode
+            setGrid(newGrid)
+            setIsMousePressed(true)
           }
-          if ((node.row === endingNode[0] && node.col === endingNode[1])) {
-            setIsMovingEnd(true)
-            return
-          }
-          var newGrid = [...grid]
-          var curNode = newGrid[node.row][node.col]
-          curNode.isWall = !node.isWall
-          newGrid[node.row][node.col] = curNode
-          setGrid(newGrid)
-          setIsMousePressed(true)
         }}
         onMouseEnter={() => {
-          if (isMovingStart) {
-            if ((node.row === endingNode[0] && node.col === endingNode[1]) || node.isWall) { return }
-            setStartingNode([node.row, node.col])
-          }
-          if (isMovingEnd) {
-            if ((node.row === startingNode[0] && node.col === startingNode[1])) { return }
-            if (node.isWall) {
+          if (!isAutomatic) {
+            if (isMovingStart) {
+              if ((node.row === endingNode[0] && node.col === endingNode[1]) || node.isWall) { return }
+              setStartingNode([node.row, node.col])
+            }
+            if (isMovingEnd) {
+              if ((node.row === startingNode[0] && node.col === startingNode[1])) { return }
+              if (node.isWall) {
+                var newGrid = [...grid]
+                var curNode = newGrid[node.row][node.col]
+                curNode.isWall = !node.isWall
+                newGrid[node.row][node.col] = curNode
+                setGrid(newGrid)
+              }
+              setEndingNode([node.row, node.col])
+
+            }
+            if (isMousePressed) {
               var newGrid = [...grid]
               var curNode = newGrid[node.row][node.col]
               curNode.isWall = !node.isWall
               newGrid[node.row][node.col] = curNode
               setGrid(newGrid)
             }
-            setEndingNode([node.row, node.col])
-
-          }
-          if (isMousePressed) {
-            var newGrid = [...grid]
-            var curNode = newGrid[node.row][node.col]
-            curNode.isWall = !node.isWall
-            newGrid[node.row][node.col] = curNode
-            setGrid(newGrid)
           }
         }}
         onMouseUp={() => {
-          if (isMovingStart) {
-            setIsMovingStart(false)
+          if (!isAutomatic) {
+            if (isMovingStart) {
+              setIsMovingStart(false)
+            }
+            if (isMovingEnd) {
+              setIsMovingEnd(false)
+            }
+            if (isMousePressed) {
+              setIsMousePressed(false)
+            }
           }
-          if (isMovingEnd) {
-            setIsMovingEnd(false)
-          }
-          if (isMousePressed) {
-            setIsMousePressed(false)
-          }
-
         }}
       >
         {(node.row === startingNode[0] && node.col === startingNode[1]) ? (
@@ -175,7 +180,10 @@ function App() {
           <>
             {(node.row === endingNode[0] && node.col === endingNode[1]) ? (
               <div id={"node".concat(Math.floor(window.innerWidth / nodeSize) * node.row + node.col)} style={styles.node}>
-                <img src={xmark} style={{ width: nodeSize - 1, heigth: nodeSize - 1, objectFit: 'fill' }} draggable={false} />
+                <img
+                  src={xmark} style={{ width: nodeSize - 1, heigth: nodeSize - 1, objectFit: 'fill' }}
+                  draggable={false}
+                />
               </div>
             ) : (
               <>
@@ -194,8 +202,9 @@ function App() {
               </>
             )}
           </>
-        )}
-      </div>
+        )
+        }
+      </div >
     )
   }
 
@@ -229,11 +238,9 @@ function App() {
                 value={mazeSize}
                 onChange={(event) => setMazeSize(event.target.value)}
               >
-                <MenuItem value={'very small'}>Very small</MenuItem>
                 <MenuItem value={'small'}>Small</MenuItem>
                 <MenuItem value={'medium'}>Medium</MenuItem>
                 <MenuItem value={'big'}>Big</MenuItem>
-                <MenuItem value={'very big'}>Very big</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -340,8 +347,8 @@ function App() {
                 value={isAutomatic}
                 onChange={(event) => setIsAutomatic(event.target.value)}
               >
-                <MenuItem value={true}>Automatic</MenuItem>
-                <MenuItem value={false}>Manual</MenuItem>
+                <MenuItem value={true}>Start & End</MenuItem>
+                <MenuItem value={false}>Randomly</MenuItem>
               </Select>
             </FormControl>
           </div>

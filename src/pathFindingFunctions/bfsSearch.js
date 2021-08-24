@@ -53,6 +53,7 @@ export function bfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
 		queue.splice(0, 1)
 		visited[node.row][node.col] = true
 		animateSearch(node, time, grid, isBlackWhite, speed)
+		time++
 		var neighbours = getNeighbours(node, grid)
 		for (var i = 0; i < neighbours.length; i++) {
 			var neighbour = neighbours[i]
@@ -68,16 +69,17 @@ export function bfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
 				animateSearch(neighbour, time, grid, isBlackWhite, speed)
 				prev[neighbour.row][neighbour.col] = node
 				result.push(neighbour)
+				time++
 			}
 		}
 	}
 	setTimeout(() => {
 		if (found) {
 			var cur = result[result.length - 1]
-			animatePath(cur, time, grid)
+			animatePath(cur, time, grid, speed)
 			while (cur != startingNode) {
 				cur = prev[cur.row][cur.col]
-				animatePath(cur, time, grid)
+				animatePath(cur, time, grid, speed)
 			}
 		}
 	}, 100)
@@ -104,7 +106,7 @@ function animateSearch(node, time, grid, isBlackWhite, speed) {
 	}, speed * time)
 }
 
-function animatePath(node, time, grid) {
+function animatePath(node, time, grid, speed) {
 	setTimeout(() => {
 		anime({
 			targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
@@ -121,5 +123,5 @@ function animatePath(node, time, grid) {
 				{ value: '0%', easing: 'linear', duration: 500 },
 			],
 		})
-	}, 10 * time)
+	}, speed * time)
 }

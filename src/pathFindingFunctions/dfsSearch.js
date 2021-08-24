@@ -99,7 +99,7 @@ function animateSearch(node, time, grid, isBlackWhite, speed) {
         { value: '0%', easing: 'linear', duration: 500 },
       ],
     })
-  }, speed * time)
+  }, (speed + 5) * time)
 }
 
 function animatePath(node, time, grid) {
