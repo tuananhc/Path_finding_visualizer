@@ -1,26 +1,26 @@
 {
   "dfsSearch": {
     "name": "Depth First Search",
-    "descriptions": ""
+    "description": "Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. The algorithm starts at the root node and explores as far as possible along each branch before backtracking. DFS does not ensures minimum path between starting and ending node."
   },
   "bfsSearch": {
     "name": "Breadth First Search",
-    "descriptions": ""
+    "description": "Breadth-first search (BFS) is an algorithm for searching a tree data structure for a node that satisfies a given property. It starts at the tree root and explores all nodes at the present depth prior to moving on to the nodes at the next depth level. Extra memory, usually a queue, is needed to keep track of the child nodes that were encountered but not yet explored.\n BFS search does ensure smallest path between starting and ending node."
   },
   "dijkstraSearch": {
-    "name": "Depth First Search",
-    "descriptions": ""
+    "name": "Dijkstra Algorithm",
+    "description": "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph. It keeps a list of possible expansion every iteration, and choose the node with the least distance to explore. But in this unweighted graph, you can see that it behaves like a BFS search."
   },
   "dfsMaze": {
     "name": "Depth First Maze",
-    "descriptions": ""
+    "description": "The algorithm creates a maze by introducing randomness into depth first search concept. Similarly, it explores the graph until no longer possible, but each iteration it chooses a node to explore at random, which is its 4 most recently added nodes, or the neighbors of the predecessor node"
   },
   "bfsMaze": {
     "name": "Breadth First Maze",
-    "descriptions": ""
+    "description": "Breadth first maze, or randomized growth maze, produces a maze by randomly choosing a possible node to explore every turn. This creates an evenly grown maze, which can be seen by the color representing the distance being evenly distributed diagonally across the maze."
   },
   "PrimsMaze": {
     "name": "Prim's Maze",
-    "descriptions": ""
+    "description": "Prim's maze helped solve DFS maze and BFS maze problem: their predictable pattern. DFS maze usually have very long corridors, while BFS maze allows adjacent node to have approximately similar distance from the root node. Prim's algorithm for maze expansion assigns each node a random cost, or 'weight', and each iteration it choose the least cost node to explore. This allows for even randomness across the entire graph, along with unbiased radial expansion outward from the root."
   }
 }

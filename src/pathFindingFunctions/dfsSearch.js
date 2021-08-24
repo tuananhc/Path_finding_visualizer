@@ -52,6 +52,7 @@ export function dfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
     var node = queue[0]
     queue.splice(0, 1)
     visited[node.row][node.col] = true
+    result.push(node)
     animateSearch(node, time, grid, isBlackWhite, speed)
     var neighbours = getNeighbours(node, grid)
     for (var i = 0; i < neighbours.length; i++) {
@@ -64,10 +65,7 @@ export function dfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
       }
       if (!visited[neighbour.row][neighbour.col]) {
         queue.unshift(neighbour)
-        visited[neighbour.row][neighbour.col] = true
-        animateSearch(neighbour, time, grid, isBlackWhite, speed)
         prev[neighbour.row][neighbour.col] = node
-        result.push(neighbour)
       }
     }
   }

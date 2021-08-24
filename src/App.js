@@ -20,7 +20,7 @@ function App() {
   const [isMovingStart, setIsMovingStart] = useState(false)
   const [isMovingEnd, setIsMovingEnd] = useState(false)
   const [mazeSize, setMazeSize] = useState('medium')
-  const [mode, setMode] = useState('automatic')
+  const [isAutomatic, setIsAutomatic] = useState(true)
   const [nodeSize, setNodeSize] = useState(20)
   const [startingNode, setStartingNode] = useState([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
   const [endingNode, setEndingNode] = useState([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
@@ -29,7 +29,7 @@ function App() {
   const [isGrid, setIsGrid] = useState(true)
   const [isBlackWhite, setIsBlackWhite] = useState(false)
   const [searchAlgorithm, setSearchAlgorithm] = useState('bfsSearch')
-  const [mazeAlgorithm, setMazeAlgorithm] = useState('dfsMaze')
+  const [mazeAlgorithm, setMazeAlgorithm] = useState('bfsMaze')
   const [speed, setSpeed] = useState(5)
   const [modalVisible, setModalVisible] = useState(false)
   const [modalContent, setModalContent] = useState('')
@@ -131,16 +131,8 @@ function App() {
         }}
         onMouseEnter={() => {
           if (isMovingStart) {
-            if ((node.row === endingNode[0] && node.col === endingNode[1])) { return }
-            if (node.isWall) {
-              var newGrid = [...grid]
-              var curNode = newGrid[node.row][node.col]
-              curNode.isWall = !node.isWall
-              newGrid[node.row][node.col] = curNode
-              setGrid(newGrid)
-            }
+            if ((node.row === endingNode[0] && node.col === endingNode[1]) || node.isWall) { return }
             setStartingNode([node.row, node.col])
-
           }
           if (isMovingEnd) {
             if ((node.row === startingNode[0] && node.col === startingNode[1])) { return }
@@ -183,27 +175,26 @@ function App() {
           <>
             {(node.row === endingNode[0] && node.col === endingNode[1]) ? (
               <div id={"node".concat(Math.floor(window.innerWidth / nodeSize) * node.row + node.col)} style={styles.node}>
-                <img src={xmark} style={{ width: nodeSize - 1, heigth: nodeSize - 1 }} draggable={false} />
+                <img src={xmark} style={{ width: nodeSize - 1, heigth: nodeSize - 1, objectFit: 'fill' }} draggable={false} />
               </div>
             ) : (
               <>
-                {(node.isWall) ? (
-                  <div
-                    className='node'
-                    id={"node".concat(Math.floor(window.innerWidth / nodeSize) * node.row + node.col)}
-                    style={styles.wall} />
-                ) : (
+                {(!node.isWall) ? (
                   <div
                     className='node'
                     id={"node".concat(Math.floor(window.innerWidth / nodeSize) * node.row + node.col)}
                     style={styles.node}
                   />
+                ) : (
+                  <div
+                    className='node'
+                    id={"node".concat(Math.floor(window.innerWidth / nodeSize) * node.row + node.col)}
+                    style={styles.wall} />
                 )}
               </>
             )}
           </>
         )}
-
       </div>
     )
   }
@@ -220,7 +211,7 @@ function App() {
             top: '25%',
             left: '50%',
             width: '30%',
-            height: '30%',
+            maxHeight: '25%',
             transform: 'translate(-50%, -50%)',
           }
         }}
@@ -261,7 +252,19 @@ function App() {
               </Select>
             </FormControl>
           </div>
-          <img src={info} style={{ width: 15, height: 15, marginLeft: -15 }} onClick={() => setModalVisible(!modalVisible)} />
+          <img src={info} style={{ width: 15, height: 15, marginLeft: -15 }}
+            onClick={() => {
+              if (searchAlgorithm === 'bfsSearch') {
+                setModalContent(description.bfsSearch)
+              } else if (searchAlgorithm === 'dfsSearch') {
+                setModalContent(description.dfsSearch)
+              } else if (searchAlgorithm === 'dijkstraSearch') {
+                setModalContent(description.dijkstraSearch)
+              }
+              setModalVisible(!modalVisible)
+            }}
+
+          />
 
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
@@ -270,8 +273,8 @@ function App() {
                 value={mazeAlgorithm}
                 onChange={(event) => setMazeAlgorithm(event.target.value)}
               >
-                <MenuItem value={'dfsMaze'}>Randomized Depth First Maze</MenuItem>
                 <MenuItem value={'bfsMaze'}>Randomized Breadth First Maze</MenuItem>
+                <MenuItem value={'dfsMaze'}>Randomized Depth First Maze</MenuItem>
                 <MenuItem value={'primsMaze'}>Prim's Maze</MenuItem>
               </Select>
             </FormControl>
@@ -321,11 +324,24 @@ function App() {
             <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
               <InputLabel>Mode</InputLabel>
               <Select
-                value={mode}
-                onChange={(event) => setMode(event.target.value)}
+                value={isAutomatic}
+                onChange={(event) => setIsAutomatic(event.target.value)}
               >
-                <MenuItem value={'automatic'}>Automatic</MenuItem>
-                <MenuItem value={'manual'}>Manual</MenuItem>
+                <MenuItem value={true}>Automatic</MenuItem>
+                <MenuItem value={false}>Manual</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Start & End placement</InputLabel>
+              <Select
+                value={isAutomatic}
+                onChange={(event) => setIsAutomatic(event.target.value)}
+              >
+                <MenuItem value={true}>Automatic</MenuItem>
+                <MenuItem value={false}>Manual</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -380,6 +396,7 @@ function App() {
               variant="contained"
               color="primary"
               style={{ width: 100, margin: '20px 40px' }}
+              disabled={!isAutomatic}
               onClick={() => {
                 if (mazeAlgorithm === 'bfsMaze') {
                   animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
