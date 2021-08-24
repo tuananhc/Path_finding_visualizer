@@ -371,8 +371,13 @@ function App() {
                 anime.remove()
                 setTimeout(() => {
                   setGrid(blankGrid)
-                  setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-                  setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
+                  if (isAutomatic) {
+                    setStartingNode([1, 1])
+                    setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
+                  } else {
+                    setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
+                    setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
+                  }
                   anime({
                     targets: '.node',
                     background: '#FFFFFF'
@@ -405,13 +410,29 @@ function App() {
               style={{ width: 100, margin: '20px 40px' }}
               disabled={!isAutomatic}
               onClick={() => {
+                var path
                 if (mazeAlgorithm === 'bfsMaze') {
-                  animateBfsMaze(createBfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
+                  path = createBfsMaze(grid, setGrid, isBlackWhite)
+                  animateBfsMaze(path, grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'dfsMaze') {
-                  animateDfsMaze(createDfsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
+                  path = createDfsMaze(grid, setGrid, isBlackWhite)
+                  animateDfsMaze(path, grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'primsMaze') {
-                  animatePrimsMaze(createPrimsMaze(grid, setGrid, isBlackWhite), grid, isBlackWhite, speed)
+                  path = createPrimsMaze(grid, setGrid, isBlackWhite)
+                  animatePrimsMaze(path, grid, isBlackWhite, speed)
                 }
+                setTimeout(() => {
+                  setStartingNode([1, 1])
+                  if (grid[grid.length - 2][grid[0].length - 2].isWall) {
+                    if (!grid[grid.length - 3][grid[0].length - 2].isWall) {
+                      setEndingNode([grid.length - 3, grid[0].length - 2])
+                    } else if (!grid[grid.length - 2][grid[0].length - 3].isWall) {
+                      setEndingNode([grid.length - 2, grid[0].length - 3])
+                    } else if (!grid[grid.length - 3][grid[0].length - 3].isWall) {
+                      setEndingNode([grid.length - 3, grid[0].length - 3])
+                    }
+                  }
+                }, path.length * speed + 1500)
               }}
             >
               Maze

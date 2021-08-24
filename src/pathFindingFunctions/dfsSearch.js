@@ -53,7 +53,9 @@ export function dfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
     queue.splice(0, 1)
     visited[node.row][node.col] = true
     result.push(node)
+    
     animateSearch(node, time, grid, isBlackWhite, speed)
+    time += 1
     var neighbours = getNeighbours(node, grid)
     for (var i = 0; i < neighbours.length; i++) {
       var neighbour = neighbours[i]
@@ -72,10 +74,11 @@ export function dfsSearch(startingNode, endingNode, grid, isBlackWhite, speed) {
   setTimeout(() => {
     if (found) {
       var cur = result[result.length - 1]
-      animatePath(cur, time, grid)
+      animatePath(cur, time, grid, speed)
       while (cur != startingNode) {
         cur = prev[cur.row][cur.col]
-        animatePath(cur, time, grid)
+        animatePath(cur, time, grid, speed)
+        time += 0.5
       }
     }
   }, 100)
@@ -99,10 +102,10 @@ function animateSearch(node, time, grid, isBlackWhite, speed) {
         { value: '0%', easing: 'linear', duration: 500 },
       ],
     })
-  }, (speed + 5) * time)
+  }, (speed + 3) * time)
 }
 
-function animatePath(node, time, grid) {
+function animatePath(node, time, grid, speed) {
   setTimeout(() => {
     anime({
       targets: document.getElementById("node".concat(node.row * grid[0].length + node.col)),
@@ -119,5 +122,5 @@ function animatePath(node, time, grid) {
         { value: '0%', easing: 'linear', duration: 500 },
       ],
     })
-  }, 10 * time)
+  }, (speed + 3) * time)
 }
