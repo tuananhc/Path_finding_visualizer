@@ -6,6 +6,7 @@ import Modal from 'react-modal'
 import { bfsSearch } from './pathFindingFunctions/bfsSearch';
 import { dfsSearch } from './pathFindingFunctions/dfsSearch';
 import { dijkstraSearch } from './pathFindingFunctions/dijkstra';
+import { aStarSearch } from './pathFindingFunctions/astar'
 import { createBfsMaze, animateBfsMaze } from './mazeFunctions/randomizedBfsMaze'
 import { createDfsMaze, animateDfsMaze } from './mazeFunctions/randomizedDfsMaze'
 import { createPrimsMaze, animatePrimsMaze } from './mazeFunctions/primsMaze'
@@ -204,7 +205,7 @@ function App() {
           </>
         )
         }
-      </div >
+      </div>
     )
   }
 
@@ -256,6 +257,7 @@ function App() {
                 <MenuItem value={'bfsSearch'}>Breadth First Search</MenuItem>
                 <MenuItem value={'dfsSearch'}>Depth First Search</MenuItem>
                 <MenuItem value={'dijkstraSearch'}>Dijkstra Search Algorithm</MenuItem>
+                <MenuItem value={'aStar'}>A Star Algorithm (A*)</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -352,6 +354,20 @@ function App() {
               </Select>
             </FormControl>
           </div>
+
+          <div style={{ margin: 30 }}>
+            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
+              <InputLabel>Root placement</InputLabel>
+              <Select
+                value={isAutomatic}
+                onChange={(event) => setIsAutomatic(event.target.value)}
+              >
+                <MenuItem value={'start'}>Start</MenuItem>
+                <MenuItem value={'center'}>Center</MenuItem>
+                <MenuItem value={'end'}>End</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </div>
         <div style={{ width: '100%', display: 'flex', flex: 1, flexDirection: 'row' }}>
           <div style={{ display: 'flex', flex: 0.2, flexDirection: 'column' }}>
@@ -399,6 +415,8 @@ function App() {
                   dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 } else if (searchAlgorithm === 'dijkstraSearch') {
                   dijkstraSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
+                } else if (searchAlgorithm === 'aStar') {
+                  aStarSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 }
               }}
             >
@@ -440,7 +458,6 @@ function App() {
           </div>
         </div>
       </div>
-
       <div>
         {renderGrid(grid)}
       </div>

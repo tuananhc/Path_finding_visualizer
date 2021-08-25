@@ -11,6 +11,9 @@
     "name": "Dijkstra Algorithm",
     "description": "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph. It keeps a list of possible expansion every iteration, and choose the node with the least distance to explore. But in this unweighted graph, you can see that it behaves like a BFS search."
   },
+  "aStarSearch": {
+    "name": "A star algorithm (A*)"
+  },
   "dfsMaze": {
     "name": "Depth First Maze",
     "description": "The algorithm creates a maze by introducing randomness into depth first search concept. Similarly, it explores the graph until no longer possible, but each iteration it chooses a node to explore at random, which is its 4 most recently added nodes, or the neighbors of the predecessor node"
