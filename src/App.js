@@ -65,28 +65,26 @@ function App() {
 
   useEffect(() => {
     setGrid(blankGrid)
-    if (isAutomatic) {
+    if (rootPlacement === 'start') {
       setStartingNode([1, 1])
       setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
-    } else {
+    } else if (rootPlacement === 'center') {
+      setStartingNode([Math.floor(blankGrid.length / 2), Math.floor(blankGrid[0].length / 2)])
+      setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
+    } else if (rootPlacement === 'random') {
+      setStartingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
+      setEndingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
+    }
+    if (!isAutomatic) {
       setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
       setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize * 3 / 4)])
       setIsBlackWhite(true)
     }
-  }, [nodeSize, isAutomatic])
+  }, [nodeSize, isAutomatic, rootPlacement])
 
   useEffect(() => {
     if (grid.length > 0) {
-      if (rootPlacement === 'start') {
-        setStartingNode([1, 1])
-        setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
-      } else if (rootPlacement === 'center') {
-        setStartingNode([Math.floor(blankGrid.length / 2), Math.floor(blankGrid[0].length / 2)])
-        setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
-      } else if (rootPlacement === 'random') {
-        setStartingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
-        setEndingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
-      }
+
     }
   }, [rootPlacement, grid])
 
@@ -273,7 +271,7 @@ function App() {
                 <MenuItem value={'bfsSearch'}>Breadth First Search</MenuItem>
                 <MenuItem value={'dfsSearch'}>Depth First Search</MenuItem>
                 <MenuItem value={'dijkstraSearch'}>Dijkstra Search Algorithm</MenuItem>
-                <MenuItem value={'aStar'}>A Star Algorithm (A*)</MenuItem>
+                <MenuItem value={'aStarSearch'}>A Star Algorithm (A*)</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -285,6 +283,8 @@ function App() {
                 setModalContent(description.dfsSearch)
               } else if (searchAlgorithm === 'dijkstraSearch') {
                 setModalContent(description.dijkstraSearch)
+              } else if (searchAlgorithm === 'aStarSearch') {
+                setModalContent(description.aStarSearch)
               }
               setModalVisible(!modalVisible)
             }}
@@ -410,7 +410,7 @@ function App() {
                   dfsSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 } else if (searchAlgorithm === 'dijkstraSearch') {
                   dijkstraSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
-                } else if (searchAlgorithm === 'aStar') {
+                } else if (searchAlgorithm === 'aStarSearch') {
                   aStarSearch(grid[startingNode[0]][startingNode[1]], endingNode, grid, isBlackWhite, speed)
                 }
               }}

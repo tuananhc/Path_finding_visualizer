@@ -12,7 +12,8 @@
     "description": "Dijkstra's algorithm is an algorithm for finding the shortest paths between nodes in a graph. It keeps a list of possible expansion every iteration, and choose the node with the least distance to explore. But in this unweighted graph, you can see that it behaves like a BFS search."
   },
   "aStarSearch": {
-    "name": "A star algorithm (A*)"
+    "name": "A star algorithm (A*)",
+    "description": "A star algorithm chooses which nodes to visit based on the sum of its distance from the root and a 'heuristic' measurement of its distance to the target, which can be calculated by diagonal distance, or euclidian distance. It is guarenteed to find a shortest path from the starting point to the target."
   },
   "dfsMaze": {
     "name": "Depth First Maze",
