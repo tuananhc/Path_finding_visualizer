@@ -34,6 +34,7 @@ function App() {
   const [speed, setSpeed] = useState(5)
   const [modalVisible, setModalVisible] = useState(false)
   const [modalContent, setModalContent] = useState('')
+  const [rootPlacement, setRootPlacement] = useState('start')
 
   const styles = {
     node: {
@@ -73,6 +74,21 @@ function App() {
       setIsBlackWhite(true)
     }
   }, [nodeSize, isAutomatic])
+
+  useEffect(() => {
+    if (grid.length > 0) {
+      if (rootPlacement === 'start') {
+        setStartingNode([1, 1])
+        setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
+      } else if (rootPlacement === 'center') {
+        setStartingNode([Math.floor(blankGrid.length / 2), Math.floor(blankGrid[0].length / 2)])
+        setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
+      } else if (rootPlacement === 'random') {
+        setStartingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
+        setEndingNode([Math.floor(Math.random() * grid.length), Math.floor(Math.random() * grid[0].length)])
+      }
+    }
+  }, [rootPlacement, grid])
 
   function createGrid() {
     var grids = []
@@ -230,7 +246,7 @@ function App() {
         <h3>{modalContent.name}</h3>
         <p>{modalContent.description}</p>
       </Modal>
-      <div style={{ height: 200, width: '100%', backgroundColor: 'lightgray' }}>
+      <div style={{ height: 200, backgroundColor: 'lightgray', overflowX: 'auto', }}>
         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <div style={{ margin: 30 }}>
             <FormControl variant='outlined'>
@@ -272,7 +288,6 @@ function App() {
               }
               setModalVisible(!modalVisible)
             }}
-
           />
 
           <div style={{ margin: 30 }}>
@@ -346,25 +361,12 @@ function App() {
             <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
               <InputLabel>Start & End placement</InputLabel>
               <Select
-                value={isAutomatic}
-                onChange={(event) => setIsAutomatic(event.target.value)}
+                value={rootPlacement}
+                onChange={(event) => setRootPlacement(event.target.value)}
               >
-                <MenuItem value={true}>Start & End</MenuItem>
-                <MenuItem value={false}>Randomly</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-
-          <div style={{ margin: 30 }}>
-            <FormControl variant='outlined' styles={{ minWidth: 120, margin: 20 }}>
-              <InputLabel>Root placement</InputLabel>
-              <Select
-                value={isAutomatic}
-                onChange={(event) => setIsAutomatic(event.target.value)}
-              >
-                <MenuItem value={'start'}>Start</MenuItem>
-                <MenuItem value={'center'}>Center</MenuItem>
-                <MenuItem value={'end'}>End</MenuItem>
+                <MenuItem value={'start'}>Opposite corners</MenuItem>
+                <MenuItem value={'center'}>Center & corner</MenuItem>
+                <MenuItem value={'random'}>Random</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -387,13 +389,6 @@ function App() {
                 anime.remove()
                 setTimeout(() => {
                   setGrid(blankGrid)
-                  if (isAutomatic) {
-                    setStartingNode([1, 1])
-                    setEndingNode([blankGrid.length - 2, blankGrid[0].length - 2])
-                  } else {
-                    setStartingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth / nodeSize / 4)])
-                    setEndingNode([Math.floor((window.innerHeight - 200) / nodeSize / 2), Math.floor(window.innerWidth * 3 / nodeSize / 4)])
-                  }
                   anime({
                     targets: '.node',
                     background: '#FFFFFF'
@@ -430,24 +425,25 @@ function App() {
               onClick={() => {
                 var path
                 if (mazeAlgorithm === 'bfsMaze') {
-                  path = createBfsMaze(grid, setGrid, isBlackWhite)
+                  path = createBfsMaze(grid[startingNode[0]][startingNode[1]], grid, setGrid, isBlackWhite)
                   animateBfsMaze(path, grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'dfsMaze') {
-                  path = createDfsMaze(grid, setGrid, isBlackWhite)
+                  path = createDfsMaze(grid[startingNode[0]][startingNode[1]], grid, setGrid, isBlackWhite)
                   animateDfsMaze(path, grid, isBlackWhite, speed)
                 } else if (mazeAlgorithm === 'primsMaze') {
-                  path = createPrimsMaze(grid, setGrid, isBlackWhite)
+                  path = createPrimsMaze(grid[startingNode[0]][startingNode[1]], grid, setGrid, isBlackWhite)
                   animatePrimsMaze(path, grid, isBlackWhite, speed)
                 }
                 setTimeout(() => {
-                  setStartingNode([1, 1])
-                  if (grid[grid.length - 2][grid[0].length - 2].isWall) {
-                    if (!grid[grid.length - 3][grid[0].length - 2].isWall) {
-                      setEndingNode([grid.length - 3, grid[0].length - 2])
-                    } else if (!grid[grid.length - 2][grid[0].length - 3].isWall) {
-                      setEndingNode([grid.length - 2, grid[0].length - 3])
-                    } else if (!grid[grid.length - 3][grid[0].length - 3].isWall) {
-                      setEndingNode([grid.length - 3, grid[0].length - 3])
+                  if (grid[endingNode[0]][endingNode[1]].isWall) {
+                    if (!grid[endingNode[0] + 1][endingNode[1]].isWall) {
+                      setEndingNode([endingNode[0] + 1, endingNode[1]])
+                    } else if (!grid[endingNode[0]][endingNode[1] + 1].isWall) {
+                      setEndingNode([endingNode[0], endingNode[1] + 1])
+                    } else if (!grid[endingNode[0] - 1][endingNode[1]].isWall) {
+                      setEndingNode([endingNode[0] - 1, endingNode[1]])
+                    } else if (!grid[endingNode[0]][endingNode[1] - 1].isWall) {
+                      setEndingNode([endingNode[0], endingNode[1] - 1])
                     }
                   }
                 }, path.length * speed + 1500)

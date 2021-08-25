@@ -1,9 +1,9 @@
 import anime from 'animejs/lib/anime.es'
 
-export function createDfsMaze(grid, setGrid, isBlackWhite, speed) {
+export function createDfsMaze(startingNode, grid, setGrid, isBlackWhite, speed) {
   var visited = []
   var newGrid = [...grid]
-  var queue = [newGrid[1][1]]
+  var queue = [newGrid[startingNode.row][startingNode.col]]
   var order = []
   // var Rainbow = require('rainbowvis.js');
   // var rainbow = new Rainbow();
@@ -46,7 +46,7 @@ export function createDfsMaze(grid, setGrid, isBlackWhite, speed) {
     }
     visited.push(visit)
   }
-  newGrid[1][1].distance = 0
+  newGrid[startingNode.row][startingNode.col].distance = 0
 
   // setTimeout(() => {
   var time = 0
