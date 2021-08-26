@@ -444,6 +444,8 @@ function App() {
                       setEndingNode([endingNode[0] - 1, endingNode[1]])
                     } else if (!grid[endingNode[0]][endingNode[1] - 1].isWall) {
                       setEndingNode([endingNode[0], endingNode[1] - 1])
+                    } else if (!grid[endingNode[0] - 1][endingNode[1] - 1].isWall) {
+                      setEndingNode([endingNode[0] - 1, endingNode[1] - 1])
                     }
                   }
                 }, path.length * speed + 1500)
